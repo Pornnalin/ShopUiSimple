@@ -9,7 +9,7 @@ using UnityEngine.UI;
 public class ShopUI : MonoBehaviour
 {
     [SerializeField] private Transform itemGroup;
-    [SerializeField] private Transform togglesGroup;    
+    [SerializeField] private Transform togglesGroup;
     [SerializeField] private List<TextMeshProUGUI> itemNameText = new List<TextMeshProUGUI>();
     [SerializeField] private List<TextMeshProUGUI> itemPriceText = new List<TextMeshProUGUI>();
     [SerializeField] private List<Image> itemImages = new List<Image>();
@@ -42,7 +42,7 @@ public class ShopUI : MonoBehaviour
     /// Sets up UI elements by finding and adding components to lists.
     /// </summary>
     private void SetupUIElements()
-    {      
+    {
 
         //Get all child tranforms from iteamGroup and togglesGroup
         Transform[] transforms = itemGroup.GetComponentsInChildren<Transform>();
@@ -52,7 +52,7 @@ public class ShopUI : MonoBehaviour
         {
             if (t != itemGroup)
             {
-                
+
                 if (t.name.Contains("Name") && t.TryGetComponent(out TextMeshProUGUI nameText))
                 {
                     itemNameText.Add(nameText);
@@ -129,7 +129,7 @@ public class ShopUI : MonoBehaviour
                 break;
 
         }
-        
+        RefreshUIElementList();
         Debug.Log("SortItem : " + dropDown.options[dropDown.value].text);
     }
     /// <summary>
@@ -139,10 +139,10 @@ public class ShopUI : MonoBehaviour
     /// <param name="y">Second numeric string</param>
     /// <returns>Comparion result</returns>
     private int CompareNumericText(string x, string y)
-    {       
+    {
         int numX = int.Parse(x);
         int numY = int.Parse(y);
-        
+
         return numX.CompareTo(numY);
     }
     /// <summary>
@@ -201,7 +201,34 @@ public class ShopUI : MonoBehaviour
         }
 
     }
+    //Refreshes the list of UI
+    public void RefreshUIElementList()
+    {
+        Transform[] transforms = itemGroup.GetComponentsInChildren<Transform>(true);
 
-  
+        categories.Clear();
+        itemImages.Clear();
+        itemNameText.Clear();
+        itemPriceText.Clear();
+
+        foreach (Transform t in transforms)
+        {
+            if (t.TryGetComponent(out CategoryLabel label))
+            {
+                categories.Add(label);
+            }
+        }
+
+        for (int i = 0; i < categories.Count; i++)
+        {
+            Image newIm = categories[i].transform.GetChild(0).GetComponentInChildren<Image>();
+            itemImages.Add(newIm);
+
+            TextMeshProUGUI newName = categories[i].transform.GetChild(1).GetComponentInChildren<TextMeshProUGUI>();
+            itemNameText.Add(newName);
+
+            TextMeshProUGUI newPrice = categories[i].transform.GetChild(2).GetComponentInChildren<TextMeshProUGUI>();
+            itemPriceText.Add(newPrice);
+        }
+    }
 }
-
